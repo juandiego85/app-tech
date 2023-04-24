@@ -8,6 +8,7 @@ y levantar el proyecto en ese momento se crean todas las tablas.
 ruta swagger: http://localhost:8080/swagger-ui/index.html
 
 generar imagen docker: docker build -t springtest .
+
 levantar la imagen: docker run -p 8080:8080 <id-imagen>
 
 

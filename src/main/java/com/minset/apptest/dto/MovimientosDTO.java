@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,10 +16,10 @@ public class MovimientosDTO {
     private String nombreCliente;
     private String numeroCuenta;
     private String tipo;
-    private Double saldoInicial;
+    private BigDecimal saldoInicial;
     private Boolean estado;
-    private Double valorMovimiento;
-    private Double saldoDisponible;
+    private BigDecimal valorMovimiento;
+    private BigDecimal saldoDisponible;
 
 
 }

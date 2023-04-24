@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,7 @@ public class MovimientoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Movimiento> obtenerCuentaPorId(@PathVariable Long id) {
+    public ResponseEntity<Movimiento> obtenerMovimientoPorId(@PathVariable Long id) {
         return movimientoService.listarId(id)
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new NotFoundException("Movimiento no encontrado"));
@@ -69,10 +70,10 @@ public class MovimientoController {
             movimientoDTO.setNombreCliente((String) resultado[1]);
             movimientoDTO.setNumeroCuenta((String) resultado[2]);
             movimientoDTO.setTipo((String) resultado[3]);
-            movimientoDTO.setSaldoInicial((Double) resultado[4]);
+            movimientoDTO.setSaldoInicial((BigDecimal) resultado[4]);
             movimientoDTO.setEstado((Boolean) resultado[5]);
-            movimientoDTO.setValorMovimiento((Double) resultado[6]);
-            movimientoDTO.setSaldoDisponible((Double) resultado[7]);
+            movimientoDTO.setValorMovimiento((BigDecimal) resultado[6]);
+            movimientoDTO.setSaldoDisponible((BigDecimal) resultado[7]);
             movimientosDTO.add(movimientoDTO);
         }
 

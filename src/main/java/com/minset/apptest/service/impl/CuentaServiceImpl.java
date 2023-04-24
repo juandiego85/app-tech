@@ -1,14 +1,13 @@
 package com.minset.apptest.service.impl;
 
 import com.minset.apptest.dao.ICuentaDAO;
-import com.minset.apptest.dao.IMovimientoDAO;
-import com.minset.apptest.dto.CuentaMovimientoDTO;
 import com.minset.apptest.model.Cuenta;
 import com.minset.apptest.service.ICuentaService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,16 +15,12 @@ public class CuentaServiceImpl implements ICuentaService {
 
     @Autowired
     private ICuentaDAO dao;
-    @Autowired
-    private IMovimientoDAO daoMovimiento;
 
     @Override
     @Transactional
-    public CuentaMovimientoDTO registrar(CuentaMovimientoDTO cuentaMovimientoDTO) {
-        cuentaMovimientoDTO.getCuenta().getMovimientos().forEach(x -> x.setCuenta(cuentaMovimientoDTO.getCuenta()));
-        dao.save(cuentaMovimientoDTO.getCuenta());
-        return cuentaMovimientoDTO;
-
+    public Cuenta registrar(Cuenta cuenta) {
+        cuenta.getMovimientos().forEach(x -> x.setCuenta(cuenta));
+        return dao.save(cuenta);
     }
 
     @Override
@@ -40,8 +35,18 @@ public class CuentaServiceImpl implements ICuentaService {
     }
 
     @Override
-    public Optional<Cuenta> listarId(long idCuenta) {
+    public Optional<Cuenta> listarid(long idCuenta) {
         return dao.findById(idCuenta);
+    }
+
+    @Override
+    public Optional<Cuenta> listarByNumeroCta(String numeroCuenta) {
+        return dao.findByNumeroCuenta(numeroCuenta);
+    }
+
+    @Override
+    public List<Cuenta> listar() {
+        return dao.findAll();
     }
 
 }

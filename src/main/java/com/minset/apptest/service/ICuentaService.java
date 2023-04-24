@@ -1,17 +1,20 @@
 package com.minset.apptest.service;
 
-import com.minset.apptest.dto.CuentaMovimientoDTO;
 import com.minset.apptest.model.Cuenta;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ICuentaService {
-    CuentaMovimientoDTO registrar(CuentaMovimientoDTO cuentaMovimientoDTO);
+    Cuenta registrar(Cuenta cuenta);
 
     Cuenta modificar(Cuenta cuenta);
 
     void eliminar(Long idCuenta);
 
-    Optional<Cuenta> listarId(long idCuenta);
+    Optional<Cuenta> listarid(long idCuenta);
+
+    Optional<Cuenta> listarByNumeroCta(String numeroCuenta);
+    List<Cuenta> listar();
 
 }

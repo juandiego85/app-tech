@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -14,7 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 public class CuentaMovimientoDTO {
     private Cuenta cuenta;
-    private List<Movimiento> movimiento;
-
+    private Movimiento movimiento;
 
 }

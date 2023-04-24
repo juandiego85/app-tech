@@ -1,11 +1,13 @@
 package com.minset.apptest.controller;
 
+import com.minset.apptest.dto.CuentaMovimientoDTO;
 import com.minset.apptest.dto.MovimientosDTO;
-import com.minset.apptest.model.Cliente;
+import com.minset.apptest.exception.NotFoundException;
 import com.minset.apptest.model.Cuenta;
 import com.minset.apptest.model.Movimiento;
 import com.minset.apptest.service.ICuentaService;
 import com.minset.apptest.service.IMovimientoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -27,26 +29,38 @@ public class MovimientoController {
     private ICuentaService cuentaService;
 
     @PostMapping
-    public ResponseEntity<Movimiento> crearMovimiento(@RequestBody Movimiento movimiento) {
-        Optional<Cuenta> optionalCuenta = cuentaService.listarId(movimiento.getCuenta().getCuentaId());
-        if (!optionalCuenta.isPresent()) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Movimiento> crearMovimiento(@Valid @RequestBody CuentaMovimientoDTO cuentaMovimientoDTO) {
+        if (cuentaMovimientoDTO == null || cuentaMovimientoDTO.getCuenta() == null
+                || cuentaMovimientoDTO.getMovimiento() == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
-        Cuenta cuenta = optionalCuenta.get();
-        movimiento.setCuenta(cuenta);
-        Movimiento nuevoMovimiento = movimientoService.registrar(movimiento);
+        Optional<Cuenta> optionalCuenta = cuentaService.listarid(cuentaMovimientoDTO.getCuenta().getCuentaId());
+        if (optionalCuenta.isEmpty()) {
+            throw new NotFoundException("Cuenta no encontrada");
+        }
+        Movimiento nuevoMovimiento = movimientoService.registrar(cuentaMovimientoDTO);
+        if (nuevoMovimiento == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(nuevoMovimiento, HttpStatus.CREATED);
-
     }
 
-
-    @GetMapping("/{clienteId}")
+    @GetMapping("/{id}")
+    public ResponseEntity<Movimiento> obtenerCuentaPorId(@PathVariable Long id) {
+        return movimientoService.listarId(id)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new NotFoundException("Movimiento no encontrado"));
+    }
+    @GetMapping("reportes/{clienteId}")
     public List<MovimientosDTO> obtenerMovimientosPorCliente(@PathVariable Long clienteId,
                                                                @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime fechaInicio,
                                                                @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime fechaFin) {
 
         List<Object[]> resultados = movimientoService.obtenerMovimientosPorClienteYFecha(clienteId, fechaInicio, fechaFin);
+
+        if (resultados.isEmpty()) {
+            throw new NotFoundException("No existe movimientos");
+        }
         List<MovimientosDTO> movimientosDTO = new ArrayList<>();
 
         for (Object[] resultado : resultados) {
